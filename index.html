@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NUML BSCS Result Portal</title>
+<style>
+/* ===== NUML OLD WEB STYLE ===== */
+body{
+    background:#d6d6d6;
+    font-family: "Times New Roman", serif;
+    margin:0;
+}
+.header{
+    background:#3375f0;
+    color:#fff;
+    padding:12px 0;
+    border-bottom:4px solid #163164;
+}
+.header h1{margin:0;font-size:22px;text-align:center}
+.header h2{margin:2px 0 0 0;font-size:16px;text-align:center;font-weight:normal}
+.container{
+    width:960px;
+    margin:20px auto;
+    background:#ffffff;
+    border:2px solid #000;
+    padding:20px;
+}
+.notice{
+    border:1px solid #000;
+    padding:10px;
+    font-size:14px;
+    background:#f4f4f4;
+}
+.login{
+    width:380px;
+    margin:30px auto;
+    border:1px solid #000;
+    padding:20px;
+    background:#fafafa;
+}
+.login h3{
+    margin-top:0;
+    text-align:center;
+    font-size:16px;
+    text-decoration:underline;
+}
+label{display:block;margin-top:10px;font-size:14px}
+input{
+    width:100%;
+    padding:6px;
+    font-family:inherit;
+    border:1px solid #000;
+}
+button{
+    width:100%;
+    margin-top:15px;
+    padding:6px;
+    font-family:inherit;
+    background:#3375f0;
+    color:#fff;
+    border:1px solid #000;
+    cursor:pointer;
+}
+button:hover{background:#0a588b}
+.error{text-align:center;color:red;margin-top:10px;font-size:13px}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    margin-top:20px;
+}
+th,td{
+    border:1px solid #000;
+    padding:6px;
+    font-size:13px;
+    text-align:center;
+}
+th{
+    background:#e1e1e1;
+}
+.hidden{display:none}
+.footer{
+    margin-top:30px;
+    text-align:center;
+    font-size:12px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>National University of Modern Languages</h1>
+    <h2>Department of Computer Science</h2>
+</div>
+
+<div class="container">
+
+<div class="notice">
+<strong>Notification:</strong> Provisional Result of BSCS – Fall 2025. Any error or omission is subject to rectification.
+</div>
+
+<div id="loginBox" class="login">
+<h3>Student Login</h3>
+<label>Roll Number</label>
+<input id="roll">
+<label>Password</label>
+<input id="pass" type="password">
+<button onclick="login()">View Result</button>
+<div id="err" class="error"></div>
+</div>
+
+<div id="resultBox" class="hidden">
+<table>
+<tr><th colspan="11">BSCS Result Detail</th></tr>
+<tr>
+<th>Roll No</th><th>Name</th><th>Calculus</th><th>OOP</th><th>OOP Lab</th><th>Expository</th><th>Civics</th><th>Discrete</th><th>Accounting</th><th>Total</th><th>SGPA</th>
+</tr>
+<tr id="row"></tr>
+</table>
+</div>
+
+<div class="footer">
+National University of Modern Languages (NUML)<br>
+This is a computer generated provisional result.
+</div>
+
+</div>
+
+<script>
+const DEFAULT_PASSWORD = "12345678";
+
+const data = {
+"I-BSCS2258027":{name:"Laiba Hanif",marks:[65,51,76,66,64,70,70]},
+"I-BSCS2258028":{name:"Muhammad Huzaifa",marks:[72,51,90,82,67,71,80]},
+"I-BSCS2258029":{name:"Mudassir Ahmed",marks:[57,61,87,68,67,71,73]},
+"I-BSCS2258030":{name:"Abid Khan",marks:[71,60,82,53,80,70,76]},
+"I-BSCS2258031":{name:"Raja Muhammad Abdullah",marks:[68,70,87,62,77,73,80]},
+"I-BSCS2258032":{name:"Muhammad Imran",marks:[90,65,90,80,75,86,96]},
+"I-BSCS2258035":{name:"Muhammad Awais",marks:[85,75,90,65,43,70,75]}
+};
+const creditHrs = [3,3,1,3,2,3,3];
+function sgpa(marks){
+    let gpa = 0;
+    for (let i = 0; i < marks.length; i++) {
+        gpa += abc(marks[i])*creditHrs[i];
+    }
+
+    return (gpa/18).toFixed(2);
+}
+
+function abc(n) {
+    if (n >= 80) return 4.0;
+    if (n < 50) return 0.0;
+    return (((n - 50)/30)*3.0) + 1;
+}
+
+function login(){
+ const r=document.getElementById('roll').value.trim();
+ const p=document.getElementById('pass').value.trim();
+ const e=document.getElementById('err');
+ e.innerText="";
+ if(!data[r]){e.innerText="Invalid Roll Number";return;}
+ if(p!==DEFAULT_PASSWORD){e.innerText="Incorrect Password";return;}
+ show(r);
+}
+
+function show(r){
+ document.getElementById('loginBox').classList.add('hidden');
+ document.getElementById('resultBox').classList.remove('hidden');
+ const s=data[r];
+ const total=s.marks.reduce((a,b)=>a+b,0);
+ document.getElementById('row').innerHTML=`
+ <td>${r}</td>
+ <td>${s.name}</td>
+ ${s.marks.map(m=>`<td>${m}</td>`).join('')}
+ <td>${total}</td>
+ <td>${sgpa(s.marks)}</td>`;
+}
+</script>
+</body>
+</html>
